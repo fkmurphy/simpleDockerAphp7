@@ -1,0 +1,65 @@
+FROM alpine:3.10
+RUN  apk --update add apache2 php7-apache2 \
+       # libjpeg-turbo-dev \
+       # libpng-dev  \
+	git  \
+	curl  wget \
+       # libintl  \
+       # libjpeg-turbo \
+       # libpng   \
+       # libxml2   \
+       # php7-gd php7-zip php7-soap php7-curl \
+       # php7-mbstring php7-exif php7-intl \ 
+       # php7-bcmath php7-opcache  \
+       # php7-soap php7-pdo  php7-ctype php7-xml \
+       # necesarios para instalar composer
+	php7-json php7-phar bash bash-completion php7-openssl \
+	php-iconv \
+	#para firma
+	php7-gmp  openssl 
+	# modulo para mysql
+	#php7-pdo_mysql mysql-client 
+	#php7-pdo_pgsql postgresql-client
+
+ARG UID 
+ARG UNAME 
+
+ENV APACHE_LOG_DIR=/var/log/apache2 \
+    PATH=/app:/app/vendor/bin:/root/.composer/vendor/bin:$PATH \
+    APACHE_RUN_USER=$UNAME \
+    APACHE_RUN_GROUP=apache \
+    APACHE_PID_FILE=/var/run/apache2/apache2.pid \
+    APACHE_LOCK_DIR=/var/lock/apache2 \
+    APACHE_RUN_DIR=/var/run/apache2  
+
+#preparar archivos
+COPY config/etc/ /etc/
+COPY app/ /app
+ADD start.sh /bootstrap/start.sh
+
+#instalar composer
+RUN curl -sS https://getcomposer.org/installer | php -- \
+        --filename=composer.phar \
+        --install-dir=/usr/local/bin && \
+	mv /usr/local/bin/composer.phar /usr/local/bin/composer 
+
+# agregar usuario y dar privilegios para apache
+RUN adduser -S $UNAME -h /app -u $UID -s /bin/sh -G apache
+RUN mkdir -p /bootstrap /var/run/apache2 /var/lock/apache2 && \
+    chown -R $UNAME.apache /app /var/log/apache2 /var/run/apache2 /var/lock/apache2 /bootstrap/start.sh  && \
+    chmod -R 775 /app /bootstrap/start.sh
+
+WORKDIR /app
+
+#RUN composer install || composer update 
+
+RUN ln -sf /dev/stdout /var/log/apache2/access.log \
+    && ln -sf /dev/stderr /var/log/apache2/error.log
+
+EXPOSE 49180
+
+USER $UNAME
+
+ENTRYPOINT ["/bootstrap/start.sh"]
+
+

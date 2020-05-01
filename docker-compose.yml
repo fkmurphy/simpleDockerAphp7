@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+    php:
+      build: 
+        context: .
+        dockerfile: Dockerfile.alpine
+        args:
+          - UID=1000
+          - UNAME=pastafrola
+      ports:
+        - 2180:49180
+      sysctls:
+        - net.ipv4.ip_unprivileged_port_start=0
+      volumes:
+        - "$PWD/app:/app"
+      
