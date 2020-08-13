@@ -14,7 +14,8 @@ RUN  apk --update add apache2 php7-apache2 \
         php7-soap php7-pdo  php7-ctype php7-xml \
        # necesarios para instalar composer
 	php7-json php7-phar bash bash-completion php7-openssl \
-	php-iconv php7-dom \
+	php-iconv php7-dom php7-xmlwriter php7-tokenizer \
+	php7-session \
 	#para firma
 	php7-gmp  openssl\ 
 	# modulo para mysql
@@ -45,9 +46,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 
 # agregar usuario y dar privilegios para apache
 RUN adduser -S $UNAME -h /app -u $UID -s /bin/sh -G apache
-RUN mkdir -p /bootstrap /var/run/apache2 /var/lock/apache2 && \
-    chown -R $UNAME.apache /app /var/log/apache2 /var/run/apache2 /var/lock/apache2 /bootstrap/start.sh  && \
-    chmod -R 775 /app /bootstrap/start.sh
+#RUN mkdir -p /bootstrap /var/run/apache2 /var/lock/apache2 && \
+#    chown -R $UNAME.apache /app /var/log/apache2 /var/run/apache2 /var/lock/apache2 /bootstrap/start.sh  && \
+#    chmod -R 775 /app /bootstrap/start.sh
 
 WORKDIR /app
 
