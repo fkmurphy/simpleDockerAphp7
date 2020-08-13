@@ -8,17 +8,17 @@ RUN  apk --update add apache2 php7-apache2 \
        # libjpeg-turbo \
        # libpng   \
        # libxml2   \
-       # php7-gd php7-zip php7-soap php7-curl \
-       # php7-mbstring php7-exif php7-intl \ 
-       # php7-bcmath php7-opcache  \
-       # php7-soap php7-pdo  php7-ctype php7-xml \
+        php7-gd php7-zip php7-soap php7-curl \
+        php7-mbstring php7-exif php7-intl \ 
+        php7-bcmath php7-opcache  \
+        php7-soap php7-pdo  php7-ctype php7-xml \
        # necesarios para instalar composer
 	php7-json php7-phar bash bash-completion php7-openssl \
-	php-iconv \
+	php-iconv php7-dom \
 	#para firma
-	php7-gmp  openssl 
+	php7-gmp  openssl\ 
 	# modulo para mysql
-	#php7-pdo_mysql mysql-client 
+	php7-pdo_mysql mysql-client 
 	#php7-pdo_pgsql postgresql-client
 
 ARG UID 
